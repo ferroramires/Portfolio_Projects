@@ -9,7 +9,6 @@ Where continent is not null
 order by 3,4
 
 
--- Select Data that we are going to be starting with
 
 Select Location, date, total_cases, new_cases, total_deaths, population
 From PortfolioProject..CovidDeaths
@@ -56,7 +55,7 @@ order by TotalDeathCount desc
 
 
 
--- BREAKING THINGS DOWN BY CONTINENT
+-- By Continent
 
 -- Showing contintents with the highest death count per population
 
@@ -141,17 +140,3 @@ Join PortfolioProject..CovidVaccinations vac
 Select *, (RollingPeopleVaccinated/Population)*100
 From #PercentPopulationVaccinated
 
-
-
-
--- Creating View to store data for later visualizations
-
-Create View PercentPopulationVaccinated as
-Select dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations
-, SUM(CONVERT(int,vac.new_vaccinations)) OVER (Partition by dea.Location Order by dea.location, dea.Date) as RollingPeopleVaccinated
---, (RollingPeopleVaccinated/population)*100
-From PortfolioProject..CovidDeaths dea
-Join PortfolioProject..CovidVaccinations vac
-	On dea.location = vac.location
-	and dea.date = vac.date
-where dea.continent is not null 
